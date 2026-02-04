@@ -1,18 +1,38 @@
 'use server';
 
-import { createClient } from '@/app/lib/supabase/client';
-import { Transaction, CreateTransactionData } from '@/app/types/transactions';
+import { Transaction, CreateTransactionData } from '@/app/types/transaction';
 import { revalidatePath } from 'next/cache';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
+// Cria um cliente Supabase no servidor
 async function createSupabaseClient() {
-  const { createClient } = await import('@supabase/ssr');
+  const cookieStore = await cookies();
   
-  return createClient(
+  return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch (error) {
+            // O cookie foi setado em uma Server Action
+            // Isso é ok para Server Components
+          }
+        },
+      },
+    }
   );
 }
 
+// Server Actions para manipular transações
 export async function getTransactions(): Promise<Transaction[]> {
   const supabase = await createSupabaseClient();
   
@@ -70,6 +90,7 @@ export async function deleteTransaction(id: string): Promise<boolean> {
   return true;
 }
 
+// Funções auxiliares
 export async function getBalance(): Promise<{
   income: number;
   expense: number;
@@ -77,11 +98,13 @@ export async function getBalance(): Promise<{
 }> {
   const supabase = await createSupabaseClient();
   
+  // Busca receitas
   const { data: incomeData, error: incomeError } = await supabase
     .from('transactions')
     .select('amount')
     .eq('type', 'income');
 
+  // Busca despesas
   const { data: expenseData, error: expenseError } = await supabase
     .from('transactions')
     .select('amount')

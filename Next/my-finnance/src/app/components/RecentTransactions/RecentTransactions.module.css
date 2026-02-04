@@ -1,0 +1,255 @@
+
+.container {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.viewAllLink {
+  font-size: 0.875rem;
+  color: #0070f3;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.viewAllLink:hover {
+  color: #7928ca;
+  transform: translateX(2px);
+}
+
+/* Tabela */
+.tableContainer {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table th {
+  text-align: left;
+  padding: 0.75rem;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 2px solid #f0f0f0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.tableRow:hover {
+  background: #f8f9fa;
+}
+
+/* Células específicas */
+.dateCell {
+  font-family: monospace;
+  color: #666;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  min-width: 60px;
+}
+
+.descriptionCell {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.descriptionWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.descriptionText {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: #333;
+}
+
+.descriptionTooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.descriptionWrapper:hover .descriptionTooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.categoryCell {
+  min-width: 120px;
+}
+
+.categoryBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.amountCell {
+  font-weight: 700;
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+.incomeAmount {
+  color: #10b981;
+}
+
+.expenseAmount {
+  color: #f31260;
+}
+
+.typeCell {
+  min-width: 90px;
+}
+
+.typeBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.incomeBadge {
+  background: #10b98120;
+  color: #10b981;
+}
+
+.expenseBadge {
+  background: #f3126020;
+  color: #f31260;
+}
+
+/* Estado vazio */
+.emptyState {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #666;
+}
+
+.emptyState p:first-child {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.emptyState p:last-child {
+  font-size: 0.875rem;
+  color: #999;
+}
+
+/* Rodapé */
+.footer {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.addButton {
+  display: inline-block;
+  background: linear-gradient(135deg, #0070f3 0%, #7928ca 100%);
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.addButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 112, 243, 0.3);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.5rem;
+  }
+  
+  .categoryCell,
+  .typeCell {
+    display: none;
+  }
+  
+  .descriptionCell {
+    min-width: 150px;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.1rem;
+  }
+  
+  .addButton {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { TransactionType, CATEGORIES } from '@/app/types/transactions';
-import { addTransaction } from '@/app/lib/db';
+import { TransactionType, CATEGORIES } from '@/app/types/transaction';
+import { addTransaction } from '@/app/lib/supabase/db';
 import styles from './TransactionForm.module.css';
 
 const transactionSchema = z.object({

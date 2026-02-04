@@ -1,0 +1,400 @@
+.container {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Loading e Error */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #666;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #0070f3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.errorContainer {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #f31260;
+}
+
+.retryButton {
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  background: #f31260;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.retryButton:hover {
+  background: #d01054;
+  transform: translateY(-1px);
+}
+
+/* Cabeçalho */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.count {
+  font-size: 0.9rem;
+  background: #f0f0f0;
+  color: #666;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 400;
+}
+
+/* Filtros */
+.filters {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filterLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filterButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  color: #666;
+}
+
+.filterButton:hover {
+  border-color: #0070f3;
+  color: #0070f3;
+}
+
+.filterButton.active {
+  background: #0070f3;
+  border-color: #0070f3;
+  color: white;
+}
+
+.categorySelect {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  min-width: 180px;
+  cursor: pointer;
+}
+
+.categorySelect:focus {
+  outline: none;
+  border-color: #0070f3;
+}
+
+.reloadButton {
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.reloadButton:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+
+/* Totais */
+.totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.totalCard {
+  padding: 1.5rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.totalCard.income {
+  background: linear-gradient(135deg, #10b98120 0%, #10b98110 100%);
+  border: 1px solid #10b98140;
+}
+
+.totalCard.expense {
+  background: linear-gradient(135deg, #f3126020 0%, #f3126010 100%);
+  border: 1px solid #f3126040;
+}
+
+.totalCard.balance {
+  background: linear-gradient(135deg, #0070f320 0%, #0070f310 100%);
+  border: 1px solid #0070f340;
+}
+
+.totalLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.totalValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.totalCard.income .totalValue {
+  color: #10b981;
+}
+
+.totalCard.expense .totalValue {
+  color: #f31260;
+}
+
+.totalCard.balance .totalValue {
+  color: #0070f3;
+}
+
+/* Tabela */
+.tableContainer {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table th {
+  text-align: left;
+  padding: 1rem;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 2px solid #f0f0f0;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.tableRow:hover {
+  background: #f8f9fa;
+}
+
+/* Células específicas */
+.dateCell {
+  font-family: monospace;
+  color: #666;
+  white-space: nowrap;
+}
+
+.descriptionCell {
+  font-weight: 500;
+  color: #333;
+  max-width: 250px;
+  word-break: break-word;
+}
+
+.categoryCell {
+  min-width: 120px;
+}
+
+.categoryBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.typeCell {
+  min-width: 100px;
+}
+
+.typeBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.incomeBadge {
+  background: #10b98120;
+  color: #10b981;
+}
+
+.expenseBadge {
+  background: #f3126020;
+  color: #f31260;
+}
+
+.amountCell {
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.incomeAmount {
+  color: #10b981;
+}
+
+.expenseAmount {
+  color: #f31260;
+}
+
+.actionsCell {
+  width: 60px;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.deleteButton:hover {
+  opacity: 1;
+  background: #f8f9fa;
+  transform: scale(1.1);
+}
+
+/* Estado vazio */
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.emptyState p:first-child {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Resumo */
+.summary {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .header {
+    flex-direction: column;
+  }
+  
+  .filters {
+    width: 100%;
+  }
+  
+  .totals {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .categoryCell,
+  .typeCell {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filterButtons {
+    justify-content: center;
+  }
+  
+  .categorySelect {
+    min-width: auto;
+  }
+}

@@ -1,0 +1,181 @@
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.cardIcon {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+  margin: 0;
+}
+
+.cardValue {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.cardTrend {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 500;
+  display: inline-block;
+  width: fit-content;
+}
+
+.cardSubtitle {
+  font-size: 0.875rem;
+  color: #999;
+  margin-top: auto;
+}
+
+/* Cards específicos */
+.balanceCard {
+  border-top: 4px solid #0070f3;
+}
+
+.balanceCard .cardIcon {
+  background: linear-gradient(135deg, #0070f320 0%, #0070f310 100%);
+  color: #0070f3;
+}
+
+.balanceCard .cardValue {
+  color: #0070f3;
+}
+
+.balanceCard .cardTrend {
+  background: #0070f310;
+  color: #0070f3;
+}
+
+.incomeCard {
+  border-top: 4px solid #10b981;
+}
+
+.incomeCard .cardIcon {
+  background: linear-gradient(135deg, #10b98120 0%, #10b98110 100%);
+  color: #10b981;
+}
+
+.incomeCard .cardValue {
+  color: #10b981;
+}
+
+.expenseCard {
+  border-top: 4px solid #f31260;
+}
+
+.expenseCard .cardIcon {
+  background: linear-gradient(135deg, #f3126020 0%, #f3126010 100%);
+  color: #f31260;
+}
+
+.expenseCard .cardValue {
+  color: #f31260;
+}
+
+.summaryCard {
+  border-top: 4px solid #7928ca;
+}
+
+.summaryCard .cardIcon {
+  background: linear-gradient(135deg, #7928ca20 0%, #7928ca10 100%);
+  color: #7928ca;
+}
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.summaryItem:last-child {
+  border-bottom: none;
+}
+
+.summaryItem span:first-child {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.summaryValueIncome {
+  color: #10b981;
+  font-weight: 600;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.summaryValueExpense {
+  color: #f31260;
+  font-weight: 600;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.summaryValueBalance {
+  font-weight: 700;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.summaryValueBalance.positive {
+  color: #10b981;
+}
+
+.summaryValueBalance.negative {
+  color: #f31260;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  
+  .cardValue {
+    font-size: 1.75rem;
+  }
+}
