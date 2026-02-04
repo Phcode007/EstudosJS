@@ -1,0 +1,221 @@
+.navigation {
+  background: linear-gradient(180deg, #2c3e50 0%, #1a2530 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 80px);
+  position: sticky;
+  top: 0;
+  transition: all 0.3s ease;
+  overflow-x: hidden;
+}
+
+.expanded {
+  width: 280px;
+  min-width: 280px;
+}
+
+.collapsed {
+  width: 70px;
+  min-width: 70px;
+}
+
+.navHeader {
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.toggleButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggleButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.navTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+  white-space: nowrap;
+}
+
+.menuList {
+  list-style: none;
+  padding: 1rem 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.menuItem {
+  margin: 0.25rem 0.5rem;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+  gap: 1rem;
+}
+
+.menuLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateX(4px);
+}
+
+.menuLink.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-weight: 500;
+}
+
+.menuIcon {
+  font-size: 1.2rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+.menuContent {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.menuLabel {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.menuDescription {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.25rem;
+}
+
+.activeIndicator {
+  position: absolute;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background: #0070f3;
+  border-radius: 50%;
+}
+
+/* Rodapé do menu */
+.navFooter {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.userAvatar {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.userName {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+}
+
+.userEmail {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.menuList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.menuList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.menuList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+  .expanded {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  
+  .collapsed {
+    width: 100%;
+    height: auto;
+  }
+  
+  .navigation {
+    height: auto;
+    border-radius: 0;
+  }
+  
+  .menuList {
+    display: flex;
+    overflow-x: auto;
+    padding: 0.5rem;
+  }
+  
+  .menuItem {
+    margin: 0 0.25rem;
+    flex-shrink: 0;
+  }
+  
+  .menuLink {
+    padding: 0.5rem;
+    min-width: 120px;
+  }
+  
+  .menuContent {
+    display: none;
+  }
+  
+  .expanded .menuContent {
+    display: flex;
+  }
+}
