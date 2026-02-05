@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/error-boundaries */
-// src/app/page.tsx
 import { getRecentTransactions, getBalance } from '@/app/lib/supabase/db';
 import DashboardCards from '@/app/components/DashboardCards/DashboardCards';
 import RecentTransactions from '@/app/components/RecentTransactions/RecentTransactions';
@@ -7,7 +6,6 @@ import styles from './page.module.css';
 
 export default async function DashboardPage() {
   try {
-    // Busca dados no servidor (Server Component)
     const [recentTransactions, balance] = await Promise.all([
       getRecentTransactions(5),
       getBalance(),
@@ -23,13 +21,10 @@ export default async function DashboardPage() {
         </header>
         
         <div className={styles.content}>
-          {/* Cards com totais */}
           <DashboardCards balance={balance} />
           
-          {/* Transações recentes */}
           <RecentTransactions transactions={recentTransactions} />
           
-          {/* Seção de resumo */}
           <div className={styles.summarySection}>
             <div className={styles.summaryCard}>
               <h3>📈 Insights</h3>
