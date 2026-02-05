@@ -26,7 +26,6 @@ export default function ReportsPage() {
         getBalance()
       ]);
       
-      // Filtrar por período
       let filteredTransactions = transactionsData;
       const now = new Date();
       
@@ -74,7 +73,7 @@ export default function ReportsPage() {
   };
 
   const exportToPDF = () => {
-    // Implementação básica - em produção usar biblioteca como jsPDF
+
     alert('Exportação para PDF em desenvolvimento! Por enquanto, use CSV.');
   };
 
@@ -148,7 +147,6 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        {/* Resumo do período */}
         <div className={styles.periodSummary}>
           <h3>📅 Período Selecionado</h3>
           <div className={styles.summaryCards}>
@@ -177,7 +175,6 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        {/* Conteúdo do relatório baseado no tipo */}
         {reportType === 'summary' && (
           <div className={styles.reportContent}>
             <h3>📊 Resumo Financeiro</h3>
@@ -319,7 +316,6 @@ export default function ReportsPage() {
           </div>
         )}
 
-        {/* Ações */}
         <div className={styles.actions}>
           <button onClick={loadData} className={styles.refreshButton}>
             🔄 Atualizar Relatório
