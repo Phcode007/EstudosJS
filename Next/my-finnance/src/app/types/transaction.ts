@@ -44,3 +44,23 @@ export interface Database {
     };
   };
 }
+
+export interface CategoryChartData {
+  name: string;
+  value: number;
+  color: string;
+}
+
+export interface MonthlyChartData {
+  month: string;
+  income: number;
+  expense: number;
+}
+
+export interface TransactionStats {
+  totalTransactions: number;
+  averageTransaction: number;
+  largestIncome: number;
+  largestExpense: number;
+  mostUsedCategory: string;
+}
