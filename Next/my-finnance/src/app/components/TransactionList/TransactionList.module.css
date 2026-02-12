@@ -398,3 +398,451 @@
     min-width: auto;
   }
 }
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 300px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #0070f3;
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.1);
+}
+
+.clearSearch {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.clearSearch:hover {
+  color: #f31260;
+}
+
+/* Cards de total */
+.totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.totalCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.totalCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.totalCard.income {
+  border-left: 4px solid #10b981;
+}
+
+.totalCard.expense {
+  border-left: 4px solid #f31260;
+}
+
+.totalCard.balance {
+  border-left: 4px solid #0070f3;
+}
+
+.totalIcon {
+  font-size: 1.5rem;
+  background: white;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.totalInfo {
+  flex: 1;
+}
+
+.totalLabel {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.totalValue {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.totalCard.income .totalValue {
+  color: #10b981;
+}
+
+.totalCard.expense .totalValue {
+  color: #f31260;
+}
+
+.totalCard.balance .totalValue.positive {
+  color: #10b981;
+}
+
+.totalCard.balance .totalValue.negative {
+  color: #f31260;
+}
+
+/* Filtros e ordenação */
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filterLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  color: #666;
+}
+
+.filterButton:hover {
+  border-color: #0070f3;
+  color: #0070f3;
+}
+
+.filterButton.active {
+  background: #0070f3;
+  border-color: #0070f3;
+  color: white;
+}
+
+.sortButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sortButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sortButton:hover {
+  border-color: #0070f3;
+  color: #0070f3;
+}
+
+.sortButton.active {
+  background: #e6f7ff;
+  border-color: #0070f3;
+  color: #0070f3;
+}
+
+/* Categoria badge melhorado */
+.categoryBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.categoryDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Data cell melhorado */
+.dateCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'SF Mono', Monaco, monospace;
+  line-height: 1.2;
+}
+
+.dateDay {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.dateMonth {
+  font-size: 0.7rem;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.dateYear {
+  font-size: 0.6rem;
+  color: #999;
+}
+
+/* Amount cell melhorado */
+.amountCell {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.amountSign {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Estado de exclusão */
+.deleting {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.deleting .deleteButton {
+  pointer-events: none;
+}
+
+/* No results */
+.noResults {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.noResults p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.clearFiltersButton {
+  padding: 0.5rem 1.5rem;
+  background: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.clearFiltersButton:hover {
+  background: #0051b3;
+  transform: translateY(-1px);
+}
+
+/* Estado vazio */
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.emptyState h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.emptyState p {
+  margin-bottom: 1.5rem;
+  color: #666;
+}
+
+.emptyButton {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, #0070f3 0%, #7928ca 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.emptyButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 112, 243, 0.3);
+}
+
+/* Rodapé */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.summary p {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0.25rem 0;
+}
+
+.balanceSummary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exportButton {
+  padding: 0.5rem 1.5rem;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exportButton:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .searchBox {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerTop {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .totals {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .filterButtons, .sortButtons {
+    flex-direction: column;
+  }
+  
+  .filterButton, .sortButton {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .exportButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .totals {
+    grid-template-columns: 1fr;
+  }
+  
+  .dateCell {
+    display: none;
+  }
+  
+  .typeCell {
+    display: none;
+  }
+}

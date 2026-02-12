@@ -7,6 +7,7 @@ import { Transaction } from '@/app/types/transaction';
 import { getTransactions } from '@/app/lib/supabase/db';
 import styles from './page.module.css';
 
+
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);

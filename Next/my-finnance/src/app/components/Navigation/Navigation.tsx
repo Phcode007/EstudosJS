@@ -97,6 +97,9 @@ export default function Navigation() {
       <div className={styles.navFooter}>
         {isExpanded && (
           <div className={styles.userSection}>
+            <Link href="/profile" className={styles.profileLink}>
+              Ver perfil
+            </Link>
             {loading ? (
               <div className={styles.loading}>Carregando...</div>
             ) : user ? (

@@ -219,3 +219,17 @@
     display: flex;
   }
 }
+
+.profileLink {
+  color: #0070f3;
+  text-decoration: none;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+.profileLink:hover {
+  color: #7928ca;
+  text-decoration: underline;
+}

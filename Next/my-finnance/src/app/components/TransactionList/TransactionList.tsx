@@ -1,113 +1,215 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Transaction, CATEGORIES } from '@/app/types/transaction';
-import { getTransactions, deleteTransaction } from '@/app/lib/supabase/db';
+import { deleteTransaction } from '@/app/lib/supabase/db';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import Link from 'next/link';
 import styles from './TransactionList.module.css';
 
-export default function TransactionList() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface TransactionListProps {
+  transactions: Transaction[];
+  onDelete?: () => void;
+}
+
+export default function TransactionList({ transactions, onDelete }: TransactionListProps) {
   const [filterType, setFilterType] = useState<'all' | 'income' | 'expense'>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<'date' | 'amount' | 'description'>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const loadTransactions = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await getTransactions();
-      setTransactions(data);
-    } catch (err) {
-      console.error('Error loading transactions:', err);
-      setError('Erro ao carregar transações');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadTransactions();
-  }, []);
-
+  // Deleta uma transação
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta transação?')) {
+    if (!confirm('Tem certeza que deseja excluir esta transação permanentemente?')) {
       return;
     }
 
+    setDeletingId(id);
     try {
       const success = await deleteTransaction(id);
       if (success) {
-        // Atualiza a lista localmente
-        setTransactions(transactions.filter(t => t.id !== id));
+        if (onDelete) {
+          onDelete();
+        }
       } else {
-        alert('Erro ao excluir transação');
+        alert('❌ Erro ao excluir transação');
       }
     } catch (err) {
       console.error('Error deleting transaction:', err);
-      alert('Erro ao excluir transação');
+      alert('❌ Erro ao excluir transação');
+    } finally {
+      setDeletingId(null);
     }
   };
 
-  const filteredTransactions = transactions.filter(transaction => {
-    if (filterType !== 'all' && transaction.type !== filterType) {
-      return false;
-    }
-    if (filterCategory !== 'all' && transaction.category !== filterCategory) {
-      return false;
-    }
-    return true;
-  });
+  // Filtra e ordena transações
+  const filteredAndSortedTransactions = useMemo(() => {
+    let filtered = [...transactions];
 
-  const totals = {
-    income: filteredTransactions
+    // Filtro por tipo
+    if (filterType !== 'all') {
+      filtered = filtered.filter(t => t.type === filterType);
+    }
+
+    // Filtro por categoria
+    if (filterCategory !== 'all') {
+      filtered = filtered.filter(t => t.category === filterCategory);
+    }
+
+    // Filtro por busca
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(t => 
+        t.description.toLowerCase().includes(term) ||
+        getCategoryName(t.category, t.type).toLowerCase().includes(term)
+      );
+    }
+
+    // Ordenação
+    filtered.sort((a, b) => {
+      let comparison = 0;
+      
+      if (sortBy === 'date') {
+        comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+      } else if (sortBy === 'amount') {
+        comparison = a.amount - b.amount;
+      } else if (sortBy === 'description') {
+        comparison = a.description.localeCompare(b.description);
+      }
+
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    return filtered;
+  }, [transactions, filterType, filterCategory, sortBy, sortOrder, searchTerm]);
+
+  // Calcula totais
+  const totals = useMemo(() => {
+    const income = filteredAndSortedTransactions
       .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0),
-    expense: filteredTransactions
+      .reduce((sum, t) => sum + t.amount, 0);
+    
+    const expense = filteredAndSortedTransactions
       .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0),
-    balance: 0
-  };
-  totals.balance = totals.income - totals.expense;
+      .reduce((sum, t) => sum + t.amount, 0);
 
+    return {
+      income,
+      expense,
+      balance: income - expense,
+      count: filteredAndSortedTransactions.length
+    };
+  }, [filteredAndSortedTransactions]);
+
+  // Obtém nome e cor da categoria
   const getCategoryInfo = (categoryId: string, type: 'income' | 'expense') => {
     const categoryList = type === 'income' ? CATEGORIES.income : CATEGORIES.expense;
     const category = categoryList.find(cat => cat.id === categoryId);
-    return category || { name: 'Desconhecida', color: '#666' };
+    return category || { name: 'Não categorizado', color: '#666' };
   };
 
-  if (loading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.spinner}></div>
-        <p>Carregando transações...</p>
-      </div>
-    );
-  }
+  const getCategoryName = (categoryId: string, type: 'income' | 'expense') => {
+    return getCategoryInfo(categoryId, type).name;
+  };
 
-  if (error) {
+  // Formata data
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), 'dd/MM/yyyy', { locale: ptBR });
+    } catch {
+      return dateString;
+    }
+  };
+
+  // Formata valor
+  const formatAmount = (amount: number, type: 'income' | 'expense') => {
+    return `${type === 'income' ? '+' : '-'} R$ ${amount.toFixed(2)}`;
+  };
+
+  if (transactions.length === 0) {
     return (
-      <div className={styles.errorContainer}>
-        <p>❌ {error}</p>
-        <button onClick={loadTransactions} className={styles.retryButton}>
-          Tentar novamente
-        </button>
+      <div className={styles.container}>
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>📭</div>
+          <h3>Nenhuma transação encontrada</h3>
+          <p>Comece adicionando sua primeira transação usando o formulário ao lado.</p>
+          <Link href="/transactions?view=form" className={styles.emptyButton}>
+            ➕ Adicionar Transação
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
+      {/* Cabeçalho com estatísticas */}
       <div className={styles.header}>
-        <h2 className={styles.title}>
-          📋 Lista de Transações
-          <span className={styles.count}>({filteredTransactions.length})</span>
-        </h2>
-        
+        <div className={styles.headerTop}>
+          <h2 className={styles.title}>
+            📋 Lista de Transações
+            <span className={styles.count}>
+              {filteredAndSortedTransactions.length} de {transactions.length}
+            </span>
+          </h2>
+          
+          {/* Busca */}
+          <div className={styles.searchBox}>
+            <span className={styles.searchIcon}>🔍</span>
+            <input
+              type="text"
+              placeholder="Buscar transações..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={styles.searchInput}
+            />
+            {searchTerm && (
+              <button 
+                className={styles.clearSearch}
+                onClick={() => setSearchTerm('')}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Cards de totais */}
+        <div className={styles.totals}>
+          <div className={`${styles.totalCard} ${styles.income}`}>
+            <div className={styles.totalIcon}>📈</div>
+            <div className={styles.totalInfo}>
+              <span className={styles.totalLabel}>Receitas</span>
+              <span className={styles.totalValue}>
+                R$ {totals.income.toFixed(2)}
+              </span>
+            </div>
+          </div>
+          <div className={`${styles.totalCard} ${styles.expense}`}>
+            <div className={styles.totalIcon}>📉</div>
+            <div className={styles.totalInfo}>
+              <span className={styles.totalLabel}>Despesas</span>
+              <span className={styles.totalValue}>
+                R$ {totals.expense.toFixed(2)}
+              </span>
+            </div>
+          </div>
+          <div className={`${styles.totalCard} ${styles.balance}`}>
+            <div className={styles.totalIcon}>⚖️</div>
+            <div className={styles.totalInfo}>
+              <span className={styles.totalLabel}>Saldo</span>
+              <span className={`${styles.totalValue} ${totals.balance >= 0 ? styles.positive : styles.negative}`}>
+                R$ {totals.balance.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Filtros e ordenação */}
         <div className={styles.filters}>
-          {/* Filtro por tipo */}
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>Tipo:</label>
             <div className={styles.filterButtons}>
@@ -134,60 +236,93 @@ export default function TransactionList() {
 
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>Categoria:</label>
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className={styles.categorySelect}
-            >
-              <option value="all">Todas categorias</option>
-              <optgroup label="Receitas">
-                {CATEGORIES.income.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="Despesas">
-                {CATEGORIES.expense.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </optgroup>
-            </select>
+            <div className={styles.selectWrapper}>
+              <select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className={styles.categorySelect}
+              >
+                <option value="all">Todas categorias</option>
+                <optgroup label="Receitas">
+                  {CATEGORIES.income.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Despesas">
+                  {CATEGORIES.expense.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+              <span className={styles.selectArrow}>▼</span>
+            </div>
           </div>
 
-          <button onClick={loadTransactions} className={styles.reloadButton}>
-            🔄 Atualizar
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>Ordenar por:</label>
+            <div className={styles.sortButtons}>
+              <button
+                className={`${styles.sortButton} ${sortBy === 'date' ? styles.active : ''}`}
+                onClick={() => {
+                  if (sortBy === 'date') {
+                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                  } else {
+                    setSortBy('date');
+                    setSortOrder('desc');
+                  }
+                }}
+              >
+                Data {sortBy === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
+              </button>
+              <button
+                className={`${styles.sortButton} ${sortBy === 'amount' ? styles.active : ''}`}
+                onClick={() => {
+                  if (sortBy === 'amount') {
+                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                  } else {
+                    setSortBy('amount');
+                    setSortOrder('desc');
+                  }
+                }}
+              >
+                Valor {sortBy === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
+              </button>
+              <button
+                className={`${styles.sortButton} ${sortBy === 'description' ? styles.active : ''}`}
+                onClick={() => {
+                  if (sortBy === 'description') {
+                    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                  } else {
+                    setSortBy('description');
+                    setSortOrder('asc');
+                  }
+                }}
+              >
+                Descrição {sortBy === 'description' && (sortOrder === 'asc' ? '↑' : '↓')}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Lista de transações */}
+      {filteredAndSortedTransactions.length === 0 ? (
+        <div className={styles.noResults}>
+          <p>🔍 Nenhuma transação encontrada com os filtros selecionados</p>
+          <button 
+            onClick={() => {
+              setFilterType('all');
+              setFilterCategory('all');
+              setSearchTerm('');
+            }}
+            className={styles.clearFiltersButton}
+          >
+            Limpar filtros
           </button>
-        </div>
-      </div>
-
-      <div className={styles.totals}>
-        <div className={`${styles.totalCard} ${styles.income}`}>
-          <span className={styles.totalLabel}>Receitas</span>
-          <span className={styles.totalValue}>
-            R$ {totals.income.toFixed(2)}
-          </span>
-        </div>
-        <div className={`${styles.totalCard} ${styles.expense}`}>
-          <span className={styles.totalLabel}>Despesas</span>
-          <span className={styles.totalValue}>
-            R$ {totals.expense.toFixed(2)}
-          </span>
-        </div>
-        <div className={`${styles.totalCard} ${styles.balance}`}>
-          <span className={styles.totalLabel}>Saldo</span>
-          <span className={styles.totalValue}>
-            R$ {totals.balance.toFixed(2)}
-          </span>
-        </div>
-      </div>
-
-      {filteredTransactions.length === 0 ? (
-        <div className={styles.emptyState}>
-          <p>📭 Nenhuma transação encontrada</p>
-          <p>Adicione sua primeira transação usando o formulário acima!</p>
         </div>
       ) : (
         <div className={styles.tableContainer}>
@@ -203,23 +338,46 @@ export default function TransactionList() {
               </tr>
             </thead>
             <tbody>
-              {filteredTransactions.map((transaction) => {
+              {filteredAndSortedTransactions.map((transaction) => {
                 const categoryInfo = getCategoryInfo(transaction.category, transaction.type);
-                const formattedDate = format(new Date(transaction.date), 'dd/MM/yyyy', {
-                  locale: ptBR,
-                });
+                const formattedDate = formatDate(transaction.date);
+                const isDeleting = deletingId === transaction.id;
 
                 return (
-                  <tr key={transaction.id} className={styles.tableRow}>
-                    <td className={styles.dateCell}>{formattedDate}</td>
+                  <tr key={transaction.id} className={`${styles.tableRow} ${isDeleting ? styles.deleting : ''}`}>
+                    <td className={styles.dateCell}>
+                      <span className={styles.dateDay}>
+                        {formattedDate.split('/')[0]}
+                      </span>
+                      <span className={styles.dateMonth}>
+                        {formattedDate.split('/')[1]}
+                      </span>
+                      <span className={styles.dateYear}>
+                        {formattedDate.split('/')[2]}
+                      </span>
+                    </td>
                     <td className={styles.descriptionCell}>
-                      {transaction.description}
+                      <div className={styles.descriptionWrapper}>
+                        <span className={styles.descriptionText}>
+                          {transaction.description}
+                        </span>
+                        {transaction.description.length > 30 && (
+                          <span className={styles.descriptionTooltip}>
+                            {transaction.description}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className={styles.categoryCell}>
                       <span
                         className={styles.categoryBadge}
-                        style={{ backgroundColor: categoryInfo.color + '20', color: categoryInfo.color }}
+                        style={{ 
+                          backgroundColor: `${categoryInfo.color}20`,
+                          color: categoryInfo.color,
+                          borderColor: categoryInfo.color
+                        }}
                       >
+                        <span className={styles.categoryDot} style={{ backgroundColor: categoryInfo.color }}></span>
                         {categoryInfo.name}
                       </span>
                     </td>
@@ -229,16 +387,23 @@ export default function TransactionList() {
                       </span>
                     </td>
                     <td className={`${styles.amountCell} ${transaction.type === 'income' ? styles.incomeAmount : styles.expenseAmount}`}>
-                      {transaction.type === 'income' ? '+' : '-'} R$ {transaction.amount.toFixed(2)}
+                      <span className={styles.amountSign}>
+                        {transaction.type === 'income' ? '+' : '-'}
+                      </span>
+                      R$ {transaction.amount.toFixed(2)}
                     </td>
                     <td className={styles.actionsCell}>
                       <button
                         onClick={() => handleDelete(transaction.id)}
                         className={styles.deleteButton}
-                        title="Excluir"
-                        aria-label="Excluir transação"
+                        disabled={isDeleting}
+                        title="Excluir transação"
                       >
-                        🗑️
+                        {isDeleting ? (
+                          <span className={styles.spinner}></span>
+                        ) : (
+                          '🗑️'
+                        )}
                       </button>
                     </td>
                   </tr>
@@ -248,12 +413,65 @@ export default function TransactionList() {
           </table>
         </div>
       )}
-      <div className={styles.summary}>
-        <p>
-          Mostrando <strong>{filteredTransactions.length}</strong> de{' '}
-          <strong>{transactions.length}</strong> transações
-        </p>
+
+      {/* Rodapé com resumo */}
+      <div className={styles.footer}>
+        <div className={styles.summary}>
+          <p>
+            <strong>{filteredAndSortedTransactions.length}</strong> transações exibidas
+            {filteredAndSortedTransactions.length !== transactions.length && (
+              <> de <strong>{transactions.length}</strong> total</>
+            )}
+          </p>
+          <p className={styles.balanceSummary}>
+            Saldo do período: 
+            <span className={totals.balance >= 0 ? styles.positive : styles.negative}>
+              R$ {totals.balance.toFixed(2)}
+            </span>
+          </p>
+        </div>
+        
+        {filteredAndSortedTransactions.length > 0 && (
+          <button 
+            onClick={() => {
+              if (confirm('Exportar estas transações para CSV?')) {
+                exportToCSV(filteredAndSortedTransactions);
+              }
+            }}
+            className={styles.exportButton}
+          >
+            📥 Exportar CSV
+          </button>
+        )}
       </div>
     </div>
   );
+}
+
+// Função auxiliar para exportar CSV
+function exportToCSV(transactions: Transaction[]) {
+  const headers = ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor (R$)'];
+  const rows = transactions.map(t => [
+    format(new Date(t.date), 'dd/MM/yyyy', { locale: ptBR }),
+    t.description,
+    getCategoryName(t.category, t.type),
+    t.type === 'income' ? 'Receita' : 'Despesa',
+    t.amount.toFixed(2)
+  ]);
+  
+  const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `transacoes-${format(new Date(), 'yyyy-MM-dd-HHmm')}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+// Helper function para nome da categoria (necessário para exportação)
+function getCategoryName(categoryId: string, type: 'income' | 'expense'): string {
+  const categoryList = type === 'income' ? CATEGORIES.income : CATEGORIES.expense;
+  const category = categoryList.find(cat => cat.id === categoryId);
+  return category?.name || 'Não categorizado';
 }
